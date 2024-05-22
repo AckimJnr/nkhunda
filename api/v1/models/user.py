@@ -10,7 +10,6 @@ class User(BaseModel):
     """
     Implements User
     """
-    user_id: str
     org_id: str
     app_id: str
     full_name: str

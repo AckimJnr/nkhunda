@@ -3,7 +3,7 @@ def single_user_data(user):
     Returns a dictionary of a single user
     """
     return {
-        "user_id": user["user_id"],
+        "user_id": str(user["_id"]),
         "org_id": user["org_id"],
         "app_id": user["app_id"],
         "full_name": user["full_name"],
