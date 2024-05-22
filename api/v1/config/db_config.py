@@ -6,10 +6,27 @@ db_config module
 Connect to our database and create collections
 """
 
-uri = "mongodb+srv://nkhunda:100nkhunda@nkhunda.biarzbj.mongodb.net/?retryWrites=true&w=majority&appName=nkhunda"
+uri = "mongodb://localhost:27017/"
 
 # Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+client = MongoClient(uri)
 
 db = client.nkhunda_db
-collections = db['app', 'user', 'message', 'group', 'chat', 'notification']
+
+# collections initialisation
+app_collection = db['app']
+user_collection = db['user']
+message_collection = db['message']
+group_collection = db['group']
+chat_collection = db['chat']
+notification_collection = db['notification']
+
+
+collection = {
+    "app": app_collection,
+    "user": user_collection,
+    "message": message_collection,
+    "group": group_collection,
+    "chat": chat_collection,
+    "notification": notification_collection
+}
