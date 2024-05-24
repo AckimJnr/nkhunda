@@ -90,3 +90,24 @@ def all_messages_data(messages):
     Returns a list of dictionaries of all messages
     """
     return [single_message_data(message) for message in messages]
+
+#group schema
+def single_group_data(group):
+    """
+    Returns a dictionary of a single group
+    """
+    return {
+        "group_id": str(group["_id"]),
+        "app_id": group["app_id"],
+        "creator": group["creator"],
+        "group_name": group["group_name"],
+        "members": group["members"],
+        "created_at": int(group["created_at"]),
+        "updated_at": int(group["updated_at"])
+    }
+
+def all_groups_data(groups):
+    """
+    Returns a list of dictionaries of all groups
+    """
+    return [single_group_data(group) for group in groups]
