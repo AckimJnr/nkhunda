@@ -1,7 +1,10 @@
 from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from models.user import User
+from models.app import App
+from models.organisation import Organisation as Org
+
 from config.db_config import collection
-from models.schemas import all_users_data
+from models.schemas import all_users_data, all_orgs_data, all_apps_data
 from bson.objectid import ObjectId
 from datetime import datetime
 """
@@ -12,7 +15,7 @@ Main module
 app = FastAPI()
 router = APIRouter()
 
-
+# user routers
 @router.get("/users/")
 async def get_users():
     """
@@ -70,5 +73,125 @@ async def delete_user(user_id: str):
 
     except Exception as e:
         return HTTPException(status_code=500, detail=f"An error occured {e}")
+
+
+#organisaton routes
+@router.get("/orgs/")
+async def get_orgs():
+    """
+    Get all organisations
+    """
+    data = collection["org"].find()
+    return all_orgs_data(data)
+
+@router.post("/org/")
+async def create_org(org: Org):
+    """
+    Create a new organisation
+    """
+    try:
+        result = collection["org"].insert_one(dict(org))
+        return {"status_code": 201, "id":str(result.inserted_id)}
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occurred: {e}")
+
+@router.put("/org/{org_id}")
+async def update_org(org_id: str, updated_org: Org):
+    """
+    Update an organisation
+    """
+    try:
+        org_id = ObjectId(org_id)
+        existing_org = collection["org"].find_one({"_id": org_id})
+
+        if not existing_org:
+            return HTTPException(status_code=404, detail=f"Organisation not found")
+        
+        update_org.updated_at = datetime.timestamp(datetime.now())
+        result = collection["org"].update_one({"_id": org_id}, {"$set":dict(updated_org)})
+        return {"status_code": 200, "message":"Organisation Updated Successfully"}
+
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occured {e}")
+
+@router.delete("/org/{org_id}")
+async def delete_org(org_id: str):
+    """
+    Delete a single organisation
+    """
+    try:
+        org_id = ObjectId(org_id)
+        existing_org = collection["org"].find_one({"_id": org_id})
+
+        if not existing_org:
+            return HTTPException(status_code=404, detail=f"Organisation not found")
+        
+        update_org.updated_at = datetime.timestamp(datetime.now())
+        result = collection["org"].delete_one({"_id": org_id})
+        return {"status_code": 200, "message":"Organisation Deleted Successfully"}
+
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occured {e}")
     
+#app routes
+@router.get("/apps/")
+async def get_apps():
+    """
+    Get all apps
+    """
+    data = collection["app"].find()
+    return all_apps_data(data)
+
+@router.post("/app/")
+async def create_app(app: App):
+    """
+    Create a new app
+    """
+    try:
+        result = collection["app"].insert_one(dict(app))
+        return {"status_code": 201, "id":str(result.inserted_id)}
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occurred: {e}")
+    
+@router.put("/app/{app_id}")
+async def update_app(app_id: str, updated_app: App):
+    """
+    Update an app
+    """
+    try:
+        app_id = ObjectId(app_id)
+        existing_app = collection["app"].find_one({"_id": app_id})
+
+        if not existing_app:
+            return HTTPException(status_code=404, detail=f"App not found")
+        
+        update_app.updated_at = datetime.timestamp(datetime.now())
+        result = collection["app"].update_one({"_id": app_id}, {"$set":dict(updated_app)})
+        return {"status_code": 200, "message":"App Updated Successfully"}
+
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occured {e}")
+
+@router.delete("/app/{app_id}")
+async def delete_app(app_id: str):
+    """
+    Delete a single app
+    """
+    try:
+        app_id = ObjectId(app_id)
+        existing_app = collection["app"].find_one({"_id": app_id})
+
+        if not existing_app:
+            return HTTPException(status_code=404, detail=f"App not found")
+        
+        update_app.updated_at = datetime.timestamp(datetime.now())
+        result = collection["app"].delete_one({"_id": app_id})
+        return {"status_code": 200, "message":"App Deleted Successfully"}
+
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occured {e}")
+
+
+
+
 app.include_router(router)

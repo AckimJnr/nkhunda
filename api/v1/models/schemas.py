@@ -48,7 +48,6 @@ def all_apps_data(apps):
     return [single_app_data(app) for app in apps]
 
 #organisation schema
-
 def single_org_data(org):
     """
     Returns a dictionary of a single organisation
@@ -66,5 +65,3 @@ def all_orgs_data(orgs):
     Returns a list of dictionaries of all organisations
     """
     return [single_org_data(org) for org in orgs]
-
-

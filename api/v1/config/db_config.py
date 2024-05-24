@@ -19,6 +19,7 @@ user_collection = db['user']
 message_collection = db['message']
 group_collection = db['group']
 chat_collection = db['chat']
+organisation_collection = db['organisation']
 notification_collection = db['notification']
 
 
@@ -28,5 +29,6 @@ collection = {
     "message": message_collection,
     "group": group_collection,
     "chat": chat_collection,
-    "notification": notification_collection
+    "notification": notification_collection,
+    "org": organisation_collection
 }
