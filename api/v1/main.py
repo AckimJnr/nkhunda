@@ -2,9 +2,9 @@ from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from models.user import User
 from models.app import App
 from models.organisation import Organisation as Org
-
+from models.message import Message
 from config.db_config import collection
-from models.schemas import all_users_data, all_orgs_data, all_apps_data
+from models.schemas import *
 from bson.objectid import ObjectId
 from datetime import datetime
 """
@@ -191,7 +191,62 @@ async def delete_app(app_id: str):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"An error occured {e}")
 
+#messages routes
+@router.get("/messages/")
+async def get_messages():
+    """
+    Get all messages
+    """
+    data = collection["message"].find()
+    return all_messages_data(data)
 
+@router.post("/message/")
+async def create_message(message: Message):
+    """
+    Create a new message
+    """
+    try:
+        result = collection["message"].insert_one(dict(message))
+        return {"status_code": 201, "id":str(result.inserted_id)}
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occurred: {e}")
 
+@router.put("/message/{message_id}")
+async def update_message(message_id: str, updated_message: Message):
+    """
+    Update a message
+    """
+    try:
+        message_id = ObjectId(message_id)
+        existing_message = collection["message"].find_one({"_id": message_id})
+
+        if not existing_message:
+            return HTTPException(status_code=404, detail=f"Message not found")
+        
+        update_message.updated_at = datetime.timestamp(datetime.now())
+        result = collection["message"].update_one({"_id": message_id}, {"$set":dict(updated_message)})
+        return {"status_code": 200, "message":"Message Updated Successfully"}
+
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occured {e}")
+
+@router.delete("/message/{message_id}")
+async def delete_message(message_id: str):
+    """
+    Delete a single message
+    """
+    try:
+        message_id = ObjectId(message_id)
+        existing_message = collection["message"].find_one({"_id": message_id})
+
+        if not existing_message:
+            return HTTPException(status_code=404, detail=f"Message not found")
+        
+        update_message.updated_at = datetime.timestamp(datetime.now())
+        result = collection["message"].delete_one({"_id": message_id})
+        return {"status_code": 200, "message":"Message Deleted Successfully"}
+
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"An error occured {e}")
 
 app.include_router(router)
