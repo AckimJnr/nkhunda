@@ -9,7 +9,7 @@ def send_message_job(message: Message):
     """
     try:
         redis_conn = Redis()
-        q = Queue("message", connection=redis_conn)
+        q = Queue("nkhunda_message_queue", connection=redis_conn)
         job_id = f"{message.app_id}-{message.recipient_id}"
         q.enqueue("send_message", dict(message), job_id=job_id)
         return True
