@@ -1,4 +1,3 @@
-import os
 from fastapi import APIRouter, HTTPException
 from bson.objectid import ObjectId
 from datetime import datetime
