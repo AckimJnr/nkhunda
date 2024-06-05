@@ -111,3 +111,22 @@ def all_groups_data(groups):
     Returns a list of dictionaries of all groups
     """
     return [single_group_data(group) for group in groups]
+
+#api_key schema
+def single_api_key_data(api_key):
+    """
+    Returns a dictionary of a single api_key
+    """
+    return {
+        "app_id": api_key["app_id"],
+        "api_key": api_key["api_key"],
+        "created_at": int(api_key["created_at"]),
+        "updated_at": int(api_key["updated_at"]),
+        "active": api_key["active"]
+    }
+
+def all_api_keys_data(api_keys):
+    """
+    Returns a list of dictionaries of all api_keys
+    """
+    return [single_api_key_data(api_key) for api_key in api_keys]
