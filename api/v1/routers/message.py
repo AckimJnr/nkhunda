@@ -85,19 +85,26 @@ def get_live_messages(job_id: str):
     Get messages from redis queue
     """
     try:
-        job_ids = redis_conn.keys(f"{job_id}_*")
+        job_ids = redis_conn.keys(f"rq:job:{job_id}*")
         messages = []
 
         for job_id in job_ids:
-            job = Job.fetc(job_id.decode("utf-8"), connection=redis_conn);
+            job = Job.fetch(job_id.decode("utf-8").split(":")[-1], connection=redis_conn)
             if job.is_finished:
                 message_data = job.result
-                message = Message(**message_data)
-                messages.append(message)
+                try:
+                    if isinstance(message_data, dict):
+                        message = Message(**message_data)
+                        messages.append(message)
+                        print(f"The message is: {messages}")
+                    else:
+                        raise HTTPException(status_code=500, detail="Invalid message format")
+                except Exception as e:
+                    raise HTTPException(status_code=500, detail=f"An error occurred in first block: {e}")
                 redis_conn.delete(job_id)
             else:
                 raise HTTPException(status_code=202, detail="Job is still running")
-            
-            return all_messages_data(messages)
+
+        return all_messages_data([msg for msg in messages])
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occured {e}")
+        raise HTTPException(status_code=500, detail=f"An error occurred in last block: {e}")

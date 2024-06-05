@@ -73,7 +73,7 @@ def single_message_data(message):
     retuns a single message
     """
     return {
-        "message_id": str(message["_id"]),
+        # "message_id": str(message["_id"]),
         "app_id": message["app_id"],
         "message_type": message["message_type"],
         "group_id": message["group_id"],
@@ -89,7 +89,7 @@ def all_messages_data(messages):
     """
     Returns a list of dictionaries of all messages
     """
-    return [single_message_data(message) for message in messages]
+    return [single_message_data(message.dict()) for message in messages]
 
 #group schema
 def single_group_data(group):

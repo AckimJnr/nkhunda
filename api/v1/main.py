@@ -17,7 +17,7 @@ app.include_router(group.router)
 app.include_router(organisation_app.router)
 
 #root route
-@app.get("/")
+@app.get("/", tags=['Root'])
 def read_root():
     return {"Success": "Server is running"}
 
